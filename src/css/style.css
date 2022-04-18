@@ -12,6 +12,7 @@ flex-wrap: wrap;
 }
 .photo-card {
     margin: 15px;
+    border: 1px solid grey;
     
 }
 .photo-card > img {

@@ -13,24 +13,26 @@ refs.searchForm.addEventListener('submit', onSearch);
 function onSearch(e) {
   e.preventDefault();
 
+  refs.gallery.innerHTML = '';
   const form = e.currentTarget;
   const searchValue = form.elements.searchQuery.value;
-  // fetchData(searchValue).then(renderMarkup); done
-  fetchData(searchValue);
+
+  getPicture(searchValue);
 }
 
-async function fetchData(searchValue) {
+async function getPicture(searchValue) {
   try {
     const BASE_URL = 'https://pixabay.com/api/';
     const API_KEY = 'key=26823171-490067530a76e346906bfc05d';
+    if (searchValue) {
+      const getFetch = await axios.get(
+        `${BASE_URL}?${API_KEY}&q=${searchValue}&image_type=photo&orientation=horizontal&safesearch=true&page=1&per_page=40`,
+      );
 
-    const response = await axios.get(
-      `${BASE_URL}?${API_KEY}&q=${searchValue}&image_type=photo&orientation=horizontal&safesearch=true`,
-    );
+      const render = await markup(getFetch.data.hits);
 
-    const render = await markup(response.data.hits);
-
-    await renderMarkup(render);
+      await renderMarkup(render);
+    }
   } catch (error) {
     console.error(error);
     Notify.failure(`${error}, please try again`);
