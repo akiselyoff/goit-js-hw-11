@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "axios": "^0.26.1",
+    "markup": "0.0.4",
     "notiflix": "^3.2.5"
   }
 }

@@ -3,11 +3,9 @@ import axios from 'axios';
 import markup from './js/markup';
 import { Notify } from 'notiflix';
 
-// console.log('oooooo');
-// Notify.success('ok');
-
 const refs = {
   searchForm: document.getElementById('search-form'),
+  gallery: document.querySelector('.gallery'),
 };
 
 refs.searchForm.addEventListener('submit', onSearch);
@@ -17,12 +15,11 @@ function onSearch(e) {
 
   const form = e.currentTarget;
   const searchValue = form.elements.searchQuery.value;
-  getPicture(searchValue);
-
-  //   console.dir(searchValue);
+  // fetchData(searchValue).then(renderMarkup); done
+  fetchData(searchValue);
 }
 
-async function getPicture(searchValue) {
+async function fetchData(searchValue) {
   try {
     const BASE_URL = 'https://pixabay.com/api/';
     const API_KEY = 'key=26823171-490067530a76e346906bfc05d';
@@ -30,21 +27,22 @@ async function getPicture(searchValue) {
     const response = await axios.get(
       `${BASE_URL}?${API_KEY}&q=${searchValue}&image_type=photo&orientation=horizontal&safesearch=true`,
     );
-    console.log(response.data.hits);
-    return response.data.hits;
-    // console.log(response);
+
+    const render = await markup(response.data.hits);
+
+    await renderMarkup(render);
   } catch (error) {
     console.error(error);
+    Notify.failure(`${error}, please try again`);
   }
 }
 
-// async function renderData(arr) {
-//   console.log(arr.data.hits);
-// }
-
-// renderData(getPicture);
+async function renderMarkup(htmlMarkup) {
+  refs.gallery.insertAdjacentHTML('beforeend', htmlMarkup);
+}
 
 // const options = {
+//       key: 26823171-490067530a76e346906bfc05d,
 //       image_type: photo,
 //       orientation: horizontal,
 //       safesearch: true,

@@ -1,0 +1,24 @@
+.search-form {
+    position:fixed;
+    
+    
+}
+
+.gallery {
+display: flex;
+flex-wrap: wrap;
+
+
+}
+.photo-card {
+    margin: 15px;
+    
+}
+.photo-card > img {
+    display: block;
+}
+.info {
+    display: flex;
+    justify-content: space-between;
+}
+

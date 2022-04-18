@@ -1,11 +1,11 @@
-export default function markup(data) {
+export default async function markup(data) {
   return data
-    .map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
+    .map(({ largeImageURL, webformatURL, tags, likes, views, comments, downloads }) => {
       return `
   <div class="photo-card">
-  <a class="gallery__item" href="${largeImageURL}">
+  
     <img src="${webformatURL}" alt="${tags}" loading="lazy" />
-    </a>
+  
     <div class="info">
       <p class="info-item">
         <b>Likes: ${likes}</b>
