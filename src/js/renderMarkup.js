@@ -1,8 +1,9 @@
-export default async function markup(data) {
-  return data
-    .map(({ largeImageURL, webformatURL, tags, likes, views, comments, downloads }) => {
-      return `
-  <div class="photo-card">
+import { refs } from './refs';
+export default async function renderMarkup(data) {
+  const markup = data
+    .map(
+      ({ largeImageURL, webformatURL, tags, likes, views, comments, downloads }) =>
+        `<div class="photo-card">
   
     <img src="${webformatURL}" alt="${tags}" loading="lazy" />
   
@@ -20,7 +21,9 @@ export default async function markup(data) {
         <b>Downloads: ${downloads}</b>
       </p>
     </div>
-  </div>`;
-    })
+  </div>`,
+    )
     .join('');
+
+  refs.gallery.insertAdjacentHTML('beforeend', markup);
 }
