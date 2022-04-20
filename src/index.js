@@ -1,18 +1,46 @@
 import './sass/main.scss';
+import { Notify } from 'notiflix';
 import { refs } from './js/refs';
-import fetchPicture from './js/fetch';
+import API from './js/API';
 import renderMarkup from './js/renderMarkup';
 
-refs.searchForm.addEventListener('submit', onSearch);
+const loadService = new API();
 
-async function onSearch(e) {
+refs.form.addEventListener('submit', onFormSubmit);
+
+async function onFormSubmit(e) {
   e.preventDefault();
 
-  refs.gallery.innerHTML = '';
-  const form = e.currentTarget;
-  const searchValue = form.elements.searchQuery.value; //no trim() because overload response
+  const searchValue = e.currentTarget.elements.searchQuery.value;
+  if (searchValue) {
+    refs.searchBtn.disabled = true;
+    loadService.searchQuery = searchValue;
+    loadService.resetPage();
+    refs.gallery.innerHTML = '';
+    loadPictures();
+  }
+}
 
-  const response = await fetchPicture(searchValue);
+function loadPictures() {
+  loadService
+    .getPictures()
+    .then(dataProcessing)
+    .catch(error => {
+      console.log(error);
+      Notify.failure('Something went wrong, please try again...');
+    });
+}
 
-  await renderMarkup(response.data.hits);
+function dataProcessing(response) {
+  refs.searchBtn.disabled = false;
+  if (response.data.totalHits === 0) {
+    Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+    return;
+  }
+  if (response.data.totalHits !== 0 && response.data.hits.length === 0) {
+    Notify.warning(`We're sorry, but you've reached the end of search results.`);
+    return;
+  }
+
+  renderMarkup(response.data.hits);
 }
