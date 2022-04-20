@@ -1,38 +1,48 @@
 import './sass/main.scss';
 import { Notify } from 'notiflix';
 import { refs } from './js/refs';
-import API from './js/API';
+import ServiceAPI from './js/API';
+// import LoadMoreBtn from './js/loadMore';
 import renderMarkup from './js/renderMarkup';
 
-const loadService = new API();
+const API = new ServiceAPI();
 
-refs.form.addEventListener('submit', onFormSubmit);
+refs.form.addEventListener('submit', onSubmit);
+refs.form.addEventListener('input', onChangeSearchValue);
+refs.loadMore.addEventListener('click', onloadMore);
 
-async function onFormSubmit(e) {
+function onSubmit(e) {
   e.preventDefault();
 
-  const searchValue = e.currentTarget.elements.searchQuery.value;
+  const searchValue = e.currentTarget.elements.searchQuery.value.trim();
   if (searchValue) {
     refs.searchBtn.disabled = true;
-    loadService.searchQuery = searchValue;
-    loadService.resetPage();
+    API.searchQuery = searchValue;
+    API.resetPage();
     refs.gallery.innerHTML = '';
     loadPictures();
   }
+  if (searchValue === '') Notify.warning('Searching field must not be empty');
 }
 
-function loadPictures() {
-  loadService
-    .getPictures()
-    .then(dataProcessing)
-    .catch(error => {
-      console.log(error);
-      Notify.failure('Something went wrong, please try again...');
-    });
+async function onloadMore() {
+  loadPictures();
 }
 
-function dataProcessing(response) {
+async function loadPictures() {
+  try {
+    const response = await API.getPictures();
+    const isDataValid = await searchValueCheck(response);
+    renderMarkup(isDataValid);
+  } catch (error) {
+    console.error(error);
+    Notify.failure(error);
+  }
+
   refs.searchBtn.disabled = false;
+}
+
+async function searchValueCheck(response) {
   if (response.data.totalHits === 0) {
     Notify.failure('Sorry, there are no images matching your search query. Please try again.');
     return;
@@ -42,5 +52,10 @@ function dataProcessing(response) {
     return;
   }
 
-  renderMarkup(response.data.hits);
+  return response.data.hits;
+}
+
+function onChangeSearchValue() {
+  refs.gallery.innerHTML = '';
+  API.resetPage();
 }

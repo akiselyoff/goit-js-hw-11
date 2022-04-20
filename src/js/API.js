@@ -1,32 +1,38 @@
 import axios from 'axios';
+const URL = 'https://pixabay.com/api/';
+const KEY = '26823171-490067530a76e346906bfc05d';
 
-export default class API {
+export default class ServiceAPI {
   constructor() {
     this.options = {
       params: {
-        key: '26823171-490067530a76e346906bfc05d',
+        key: `${KEY}`,
         q: '',
         image_type: 'photo',
         orientation: 'horizontal',
         safesearch: true,
         page: 1,
-        per_page: 4,
+        per_page: 3,
       },
     };
   }
 
   async getPictures() {
-    const response = await axios.get('https://pixabay.com/api/', this.options);
-    this.nextPage();
-    return response;
+    try {
+      const response = await axios.get(`${URL}`, this.options);
+      await this.nextPage();
+      return response;
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  nextPage() {
+  async nextPage() {
     this.options.params.page += 1;
   }
 
   resetPage() {
-    this.pageNumber = 1;
+    this.options.params.page = 1;
   }
 
   get searchQuery() {
@@ -35,13 +41,5 @@ export default class API {
 
   set searchQuery(newQuery) {
     this.options.params.q = newQuery;
-  }
-
-  get pageNumber() {
-    return this.options.params.page;
-  }
-
-  set pageNumber(newNumber) {
-    this.options.params.page = newNumber;
   }
 }
