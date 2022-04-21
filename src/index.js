@@ -11,6 +11,8 @@ refs.form.addEventListener('submit', onSubmit);
 refs.form.addEventListener('input', onChangeSearchValue);
 refs.loadMore.addEventListener('click', onloadMore);
 
+hideLoadMore();
+
 function onSubmit(e) {
   e.preventDefault();
 
@@ -21,6 +23,7 @@ function onSubmit(e) {
     API.resetPage();
     refs.gallery.innerHTML = '';
     loadPictures();
+    showLoadMore();
   }
   if (searchValue === '') Notify.warning('Searching field must not be empty');
 }
@@ -48,6 +51,7 @@ async function searchValueCheck(response) {
     return;
   }
   if (response.data.totalHits !== 0 && response.data.hits.length === 0) {
+    hideLoadMore();
     Notify.warning(`We're sorry, but you've reached the end of search results.`);
     return;
   }
@@ -56,6 +60,14 @@ async function searchValueCheck(response) {
 }
 
 function onChangeSearchValue() {
+  hideLoadMore();
   refs.gallery.innerHTML = '';
   API.resetPage();
+}
+
+function hideLoadMore() {
+  refs.loadMore.classList.add('hidden');
+}
+function showLoadMore() {
+  refs.loadMore.classList.remove('hidden');
 }

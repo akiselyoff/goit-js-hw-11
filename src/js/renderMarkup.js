@@ -9,16 +9,20 @@ export default async function renderMarkup(data) {
   
     <div class="info">
       <p class="info-item">
-        <b>Likes: ${likes}</b>
+        <b>Likes: </b>
+        <span>${likes}</span>
       </p>
       <p class="info-item">
-        <b>Views: ${views}</b>
+        <b>Views: </b>
+        <span>${views}</span>
       </p>
       <p class="info-item">
-        <b>Comments: ${comments}</b>
+        <b>Comments: </b>
+        <span>${comments}</span>
       </p>
       <p class="info-item">
-        <b>Downloads: ${downloads}</b>
+        <b>Downloads: </b>
+        <span>${downloads}</span>
       </p>
     </div>
   </div>`,
