@@ -23,7 +23,6 @@ function onSubmit(e) {
     API.resetPage();
     refs.gallery.innerHTML = '';
     loadPictures();
-    showLoadMore();
   }
   if (searchValue === '') Notify.warning('Searching field must not be empty');
 }
@@ -55,6 +54,7 @@ async function searchValueCheck(response) {
     Notify.warning(`We're sorry, but you've reached the end of search results.`);
     return;
   }
+  showLoadMore();
 
   return response.data.hits;
 }

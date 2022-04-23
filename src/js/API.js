@@ -12,7 +12,7 @@ export default class ServiceAPI {
         orientation: 'horizontal',
         safesearch: true,
         page: 1,
-        per_page: 3,
+        per_page: 40,
       },
     };
   }
